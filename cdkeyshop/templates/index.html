@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="welcome-div">
+        <h1 style="font-size: 96px">Welcome to</h1>
+        <h1 style="font-size: 96px">CD Keys Shop</h1>
+    </div>
+    <div class="container-fluid d-flex flex-column align-items-center justify-content-center">
+        <h1 style="font-size: 96px" class="py-4">Trending products:</h1>
+        <div id="trendingCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for tp in trending_products %}
+                    <div class="carousel-item{% if forloop.first %} active{% endif %}">
+                        <div class="carousel-image-container">
+                            <img src="{{ tp.product.image.url }}" alt="{{ tp.product.name }}">
+                        </div>
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>{{ tp.product.name }}</h5>
+                            <p>{{ tp.product.description }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <a class="carousel-control-prev" href="#trendingCarousel" role="button" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#trendingCarousel" role="button" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </a>
+        </div>
+    </div>
+    <div class="container my-5 p-5" style="background: #252525; border-radius: 20px">
+        <h2 class="mb-4">Available Products</h2>
+        <div class="row">
+            {% for product in available_products %}
+                <div class="col-12 mb-4">
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        </div>
+                        <div class="product-details">
+                            <h4>{{ product.name }}</h4>
+                            <p>{{ product.description }}</p>
+                            <p>Categories:
+                                {% for product_category in product.productscategories_set.all %}
+                                    {{ product_category.category_id }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                            {% if user.is_authenticated %}
+                                <div class="add-to-cart ms-auto ">
+                                    <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">Add to Cart</a>
+                                </div>
+                                {% else %}
+                                <p>Please <a href="/login">log in</a> to purchase</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

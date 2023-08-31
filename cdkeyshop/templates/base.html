@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CD Keys Shop{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .flex-grow-1 {
+            flex-grow: 1;
+        }
+
+        .min-vh-100 {
+            min-height: 100vh;
+        }
+    </style>
+    <style>
+        .welcome-div {
+            display: flex;
+            height: 90vh;
+            width: 100vw;
+            padding: 0;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            align-self: stretch;
+            background: #252525;
+        }
+
+        .carousel-image-container {
+            width: 500px;
+            height: 500px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto; /* Center the container horizontally */
+        }
+
+        .carousel-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-caption {
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+            color: white;
+            padding: 10px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+    </style>
+    <style>
+        /* ... Other CSS ... */
+        .product-card {
+            display: flex;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .product-image-container {
+            width: 150px;
+            height: 150px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+
+        .product-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .product-details {
+            padding-left: 15px;
+            flex: 1;
+        }
+
+        .add-to-cart {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .quantity-input label {
+            margin-right: 10px;
+        }
+    </style>
+
+
+</head>
+<body class="d-flex flex-column" style="background: #1B1B1B">
+<!-- Header -->
+<header class="d-flex flex-row w-100 align-items-center justify-content-center text-white text-center p-3 m-0"
+        style="background: #252525">
+    <h1>CD Keys Shop</h1>
+    <div style="width: 60%"></div>
+    {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}" class="btn btn-danger me-2">Log out</a>
+        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#cartModal">
+            Cart
+        </button>
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-primary me-2">Log in</a>
+        <a href="{% url 'register' %}" class="btn btn-success">Register</a>
+    {% endif %}
+</header>
+
+<!-- Content -->
+<div class="p-0 m-0 mb-2 d-flex flex-column text-white" style="width: 100vw;">
+    {% block content %}{% endblock %}
+</div>
+
+<div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cartModalLabel">Your Cart</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% if cart_contents %}
+                    {% for product in cart_contents %}
+                        <div class="cart-item">
+                            <span>{{ product.name }}</span>
+                            <span>{{ product.price }}</span>
+                        </div>
+                    {% endfor %}
+                    <div class="cart-total">Total: {{ cart_total }}</div>
+                {% else %}
+                    <p>Your cart is empty.</p>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cartModal"></div>
+
+<!-- Footer -->
+<footer class="text-white text-center p-0 m-0 py-3" style="background: #252525">
+    &copy; 2023 CD Keys Shop. All rights reserved.
+</footer>
+
+<!-- Bootstrap JS (optional) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#cartModal').on('show.bs.modal', function (event) {
+            // Load cart contents via AJAX and update the modal body
+            $.get("{% url 'load_cart_contents' %}", function (data) {
+                if (data.cart_contents.length > 0) {
+                    // Render cart contents
+                    var cartHtml = '';
+                    $.each(data.cart_contents, function (index, product) {
+                        cartHtml += '<div class="cart-item">' +
+                            '<span class="me-2">' + product.name + '</span>' +
+                            '<span>' + product.price + '$</span>' +
+                            '</div>';
+                    });
+                    cartHtml += '<div class="cart-total">Total: ' + data.total + '$</div>';
+                    $('.modal-body').html(cartHtml);
+                } else {
+                    // Cart is empty
+                    $('.modal-body').html('<p>Your cart is empty.</p>');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
