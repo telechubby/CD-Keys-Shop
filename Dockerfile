@@ -16,6 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Run database migrations
+RUN pip install django Pillow
 RUN python manage.py migrate
 
 # Expose port 8000 for the Django application
