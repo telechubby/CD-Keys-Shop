@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="mt-4">Payment Success</h1>
+        <div class="alert alert-success mt-4">
+            <p>Your payment was successful! Thank you!</p>
+        </div>
+
+        <div class="payment-details mt-4">
+            <h2>Payment Details:</h2>
+
+            <p><strong>Payment Amount:</strong> ${{ cart_total }}</p>
+            <p><strong>Payment Method:</strong> **** **** **** {{ card_number|slice:"-4:" }} (Visa)</p>
+            <p><strong>Transaction ID:</strong> {{ transaction_id }}</p>
+        </div>
+    </div>
+{% endblock %}

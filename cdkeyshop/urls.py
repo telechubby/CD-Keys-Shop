@@ -21,6 +21,9 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path('checkout/', views.checkout, name='checkout'),  # Add checkout route
+    path('payment/', views.payment, name='payment'),
+    path('payment/success/', views.payment_success, name='payment_success'),
     path('login/', views.login_view, name='login'),
     path('register/', views.registration_view, name='register'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),

@@ -1,6 +1,7 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.template.loader import render_to_string
 
 from cdkeyshop.forms import *
 from cdkeyshop.models import *
@@ -59,9 +60,10 @@ def remove_from_cart(request, product_id):
     if not request.user.is_authenticated:
         return redirect('login')
 
-    product = Product.objects.get(pk=product_id)
-    cart = Cart.objects.get(user=request.user)
-    cart.products.remove(product)
+    cart = get_object_or_404(Cart, user=request.user)
+    product = get_object_or_404(CartProduct, cart=cart, product_id=product_id)
+    product.delete()
+
     return redirect('index')  # Redirect to your cart page
 
 
@@ -98,4 +100,43 @@ def index(request):
     available_products = Product.objects.filter(available_stock__gt=0)
     return render(request, 'index.html', {'trending_produ'
                                           'cts': trending_products, 'available_products': available_products})
+
+@login_required
+def checkout(request):
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart_products = cart.cartproduct_set.all()  # Get all cart products associated with the cart
+    if cart_products:  # Check if cart is not empty
+        return render(request, 'checkout.html', {'cart_products': cart_products, 'total': cart.calculate_total()})
+    else:
+        return redirect('index')  # Redirect to index page if cart is empty
+
+
+@login_required
+def payment(request):
+    if request.method == 'POST':
+        card_number = request.POST.get('card_number')
+        # Store the card number in the session
+        request.session['card_number'] = card_number
+        return redirect('payment_success')
+
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart_total = cart.calculate_total()  # Get the cart total from your function
+    context = {'cart_total': cart_total}
+    return render(request, 'payment.html', context)
+
+
+@login_required
+def payment_success(request):
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart_total = cart.calculate_total()  # Get the cart total from your function
+    # Retrieve the card number from the session
+    card_number = request.session.get('card_number', '')
+    if not card_number:
+        messages.error(request, 'Card number not found.')
+        return redirect('payment')
+
+    CartProduct.objects.filter(cart=cart).delete()
+
+    context = {'cart_total': cart_total, 'card_number': card_number, 'transaction_id': '963597123850'}
+    return render(request, 'payment_success.html', context)
 

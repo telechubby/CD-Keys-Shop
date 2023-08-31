@@ -103,7 +103,7 @@
 <!-- Header -->
 <header class="d-flex flex-row w-100 align-items-center justify-content-center text-white text-center p-3 m-0"
         style="background: #252525">
-    <h1>CD Keys Shop</h1>
+    <a href="/" style="text-decoration: none; color: inherit; font-size: 60px">CD Keys Shop</a>
     <div style="width: 60%"></div>
     {% if user.is_authenticated %}
         <a href="{% url 'logout' %}" class="btn btn-danger me-2">Log out</a>
@@ -117,7 +117,7 @@
 </header>
 
 <!-- Content -->
-<div class="p-0 m-0 mb-2 d-flex flex-column text-white" style="width: 100vw;">
+<div class="p-0 m-0 mb-2 d-flex flex-column text-white" style="width: 100vw; height: 90vh">
     {% block content %}{% endblock %}
 </div>
 
@@ -148,21 +148,38 @@
     </div>
 </div>
 
-<div class="cartModal"></div>
-
-<!-- Footer -->
-<footer class="text-white text-center p-0 m-0 py-3" style="background: #252525">
-    &copy; 2023 CD Keys Shop. All rights reserved.
-</footer>
-
 <!-- Bootstrap JS (optional) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     $(document).ready(function () {
+        // Event delegation for the "Remove" button
+        $('.modal-body').on('click', '.remove-from-cart', function (event) {
+            event.preventDefault();
+            var productId = $(this).data('product-id');
+            var removeUrl = "{% url 'remove_from_cart' 0 %}".replace('0', productId);
+
+            // Perform AJAX request to remove the item
+            $.ajax({
+                url: removeUrl, // Replace with your desired URL
+                type: 'GET',
+                success: function () {
+                    // Refresh cart contents after removing an item
+                    refreshCartContents();
+                },
+                error: function (error) {
+                    console.log('Error:', error);
+                }
+            });
+        });
+
         $('#cartModal').on('show.bs.modal', function (event) {
-            // Load cart contents via AJAX and update the modal body
+            refreshCartContents()
+        });
+
+        // Function to refresh cart contents in the modal
+        function refreshCartContents() {
             $.get("{% url 'load_cart_contents' %}", function (data) {
                 if (data.cart_contents.length > 0) {
                     // Render cart contents
@@ -171,16 +188,18 @@
                         cartHtml += '<div class="cart-item">' +
                             '<span class="me-2">' + product.name + '</span>' +
                             '<span>' + product.price + '$</span>' +
+                            '<a href="#" class="btn btn-danger remove-from-cart" data-product-id=' + product.id + '>Remove</a>' +
                             '</div>';
                     });
                     cartHtml += '<div class="cart-total">Total: ' + data.total + '$</div>';
+                    cartHtml += '<a class="btn btn-primary" href="{% url 'checkout' %}">Checkout</a>'
                     $('.modal-body').html(cartHtml);
                 } else {
                     // Cart is empty
                     $('.modal-body').html('<p>Your cart is empty.</p>');
                 }
             });
-        });
+        }
     });
 </script>
 </body>

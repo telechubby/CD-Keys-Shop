@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="d-flex flex-column h-100 align-items-center justify-content-center">
+        <h1>Checkout</h1>
+        <p>Thank you for your order!</p>
+        <div class="cart-contents">
+            <h2>Your Cart:</h2>
+            {% if cart_products %}
+                <ul>
+                    {% for cart_product in cart_products %}
+                        <li>
+                            <span>{{ cart_product.product.name }}</span>
+                            <span>{{ cart_product.product.price }}$</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <p class="cart-total">Total: {{ total }}$</p>
+
+                <!-- Checkout form can be added here -->
+                <form action="{% url 'payment' %}" method="get">
+                    {% csrf_token %}git
+                    <!-- Your form fields here -->
+                    <button class="btn btn-success w-100" type="submit">Proceed to Payment</button>
+                </form>
+            {% else %}
+                <p>Your cart is empty.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

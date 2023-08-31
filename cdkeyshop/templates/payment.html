@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="mt-4">Payment</h1>
+
+        <div class="payment-details mt-4">
+            <h2>Payment Details:</h2>
+
+            <form id="payment-form" action="{% url 'payment' %}" method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="card-number" class="form-label">Card Number:</label>
+                    <input type="text" id="card-number" name="card_number" class="form-control"
+                           inputmode="numeric" pattern="[0-9]*" placeholder="1234 5678 9012 3456" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-10 mb-3">
+                        <label for="expiration-date" class="form-label">Expiration Date (MM/YY):</label>
+                        <input type="text" id="expiration-date" name="expiration_date" class="form-control"
+                               inputmode="numeric" pattern="(0[1-9]|1[0-2])\/\d{2}" placeholder="MM/YY" required>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="cvv" class="form-label">CVV:</label>
+                        <input type="text" id="cvv" name="cvv" class="form-control"
+                               inputmode="numeric" pattern="[0-9]*" placeholder="123" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Amount to Pay:</label>
+                    <input type="text" id="amount" name="amount" class="form-control"
+                           value="$ {{ cart_total }}" readonly>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Pay now</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
