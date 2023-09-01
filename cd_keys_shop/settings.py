@@ -87,7 +87,7 @@ CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
 
 # Prevent the use of CSRF cookie
-CSRF_COOKIE_NAME = None
+CSRF_COOKIE_NAME = ""
 
 
 # Password validation
