@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-q%82)vn6#7-l95-+s-*k!(k&woj82=z_-)=qd8m(br@9kazm^g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['sincere-stranger-pipeops-69bc6281.pipeops.app']
 
 
 # Application definition
