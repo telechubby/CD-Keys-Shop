@@ -29,8 +29,8 @@
         }
 
         .carousel-image-container {
-            width: 500px;
-            height: 500px;
+            width: calc(min(80vw,600px));
+            height: calc(min(80vw,600px));
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -39,8 +39,8 @@
         }
 
         .carousel-image-container img {
-            width: 100%;
-            height: 100%;
+            width: calc(min(80vw,600px));
+            height: calc(min(80vw,600px));
             object-fit: cover;
         }
 
@@ -64,8 +64,8 @@
         }
 
         .product-image-container {
-            width: 150px;
-            height: 150px;
+            width: 20vw;
+            height: 20vw;
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -103,16 +103,16 @@
 <!-- Header -->
 <header class="d-flex flex-row w-100 align-items-center justify-content-center text-white text-center p-3 m-0"
         style="background: #252525">
-    <a href="/" style="text-decoration: none; color: inherit; font-size: 60px">CD Keys Shop</a>
+    <a href="/" style="text-decoration: none; color: inherit; font-size: calc(min(10vw,60px))">CD Keys Shop</a>
     <div style="width: 60%"></div>
     {% if user.is_authenticated %}
-        <a href="{% url 'logout' %}" class="btn btn-danger me-2">Log out</a>
-        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#cartModal">
+        <a href="{% url 'logout' %}" class="btn btn-danger me-2 h-100">Logout</a>
+        <button type="button" class="btn btn-secondary h-100" data-bs-toggle="modal" data-bs-target="#cartModal">
             Cart
         </button>
     {% else %}
-        <a href="{% url 'login' %}" class="btn btn-primary me-2">Log in</a>
-        <a href="{% url 'register' %}" class="btn btn-success">Register</a>
+        <a href="{% url 'login' %}" class="btn btn-primary me-2 h-100">Login</a>
+        <a href="{% url 'register' %}" class="btn btn-success h-100">Register</a>
     {% endif %}
 </header>
 
