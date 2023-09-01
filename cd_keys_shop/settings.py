@@ -82,10 +82,6 @@ DATABASES = {
     }
 }
 
-# Disable secure and HttpOnly flags on CSRF cookie
-CSRF_COOKIE_SECURE = False
-CSRF_COOKIE_HTTPONLY = False
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

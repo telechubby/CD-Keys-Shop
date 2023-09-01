@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 
 
-@csrf_exempt
+
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -26,7 +26,7 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 
-@csrf_exempt
+
 def registration_view(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
@@ -42,7 +42,7 @@ def registration_view(request):
     return render(request, 'register.html', {'form': form})
 
 
-@csrf_exempt
+
 def add_to_cart(request, product_id):
     if not request.user.is_authenticated:
         return redirect('login')  # Redirect to login page if not logged in
@@ -60,7 +60,7 @@ def add_to_cart(request, product_id):
     return redirect('index')  # Redirect to your product list page
 
 
-@csrf_exempt
+
 def remove_from_cart(request, product_id):
     if not request.user.is_authenticated:
         return redirect('login')
@@ -72,7 +72,7 @@ def remove_from_cart(request, product_id):
     return redirect('index')  # Redirect to your cart page
 
 
-@csrf_exempt
+
 def load_cart_contents(request):
     if not request.user.is_authenticated:
         return JsonResponse({'error': 'User is not authenticated'})
@@ -101,7 +101,7 @@ def load_cart_contents(request):
     return JsonResponse(response_data)
 
 
-@csrf_exempt
+
 def index(request):
     trending_products = TrendingProduct.objects.select_related('product').all()
     available_products = Product.objects.filter(available_stock__gt=0)
@@ -109,7 +109,7 @@ def index(request):
                                           'cts': trending_products, 'available_products': available_products})
 
 @login_required
-@csrf_exempt
+
 def checkout(request):
     cart, created = Cart.objects.get_or_create(user=request.user)
     cart_products = cart.cartproduct_set.all()  # Get all cart products associated with the cart
@@ -120,7 +120,7 @@ def checkout(request):
 
 
 @login_required
-@csrf_exempt
+
 def payment(request):
     if request.method == 'POST':
         card_number = request.POST.get('card_number')
@@ -135,7 +135,7 @@ def payment(request):
 
 
 @login_required
-@csrf_exempt
+
 def payment_success(request):
     cart, created = Cart.objects.get_or_create(user=request.user)
     cart_total = cart.calculate_total()  # Get the cart total from your function
