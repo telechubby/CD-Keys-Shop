@@ -1,3 +1,3 @@
 # CD-Keys-Shop
 
-Link to live demo: (http://142.93.162.218)http://142.93.162.218
+Link to live demo: http://142.93.162.218
